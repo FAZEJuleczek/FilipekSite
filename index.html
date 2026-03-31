@@ -1,1 +1,244 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FilipekSite | Centrum Dowodzenia</title>
+    <style>
+        :root {
+            --yellow: #FFD700; /* Mocny żółty */
+            --blue: #0056b3;   /* Głęboki niebieski */
+            --dark: #121212;
+            --white: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--yellow);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: var(--dark);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            position: fixed;
+            left: -260px;
+            top: 0;
+            width: 260px;
+            height: 100%;
+            background: var(--dark);
+            color: white;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1000;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            padding-top: 80px;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar a {
+            padding: 15px 25px;
+            text-decoration: none;
+            color: var(--white);
+            font-size: 18px;
+            border-bottom: 1px solid #222;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            background: var(--blue);
+            padding-left: 35px;
+        }
+
+        /* HEADER */
+        .top-bar {
+            background: var(--blue);
+            color: white;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .menu-toggle {
+            font-size: 24px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: white;
+            margin-right: 15px;
+        }
+
+        .logo {
+            font-weight: 900;
+            font-size: 22px;
+            letter-spacing: 1px;
+        }
+
+        /* CONTENT */
+        .main-container {
+            padding: 20px;
+            height: calc(100vh - 120px);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .card {
+            background: white;
+            width: 90%;
+            max-width: 500px;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            border-top: 8px solid var(--blue);
+            margin-bottom: 20px;
+        }
+
+        /* MIKROFON */
+        .mic-wrap {
+            position: fixed;
+            bottom: 40px;
+            right: 30px;
+            z-index: 1100;
+        }
+
+        .mic-button {
+            width: 70px;
+            height: 70px;
+            background: var(--blue);
+            border-radius: 50%;
+            border: 5px solid white;
+            color: white;
+            font-size: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0, 86, 179, 0.4);
+            transition: 0.2s;
+        }
+
+        .mic-button:active { transform: scale(0.9); }
+
+        #voice-status {
+            position: fixed;
+            bottom: 120px;
+            right: 30px;
+            background: var(--dark);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        /* FOOTER */
+        .footer-text {
+            position: fixed;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: rgba(0,0,0,0.5);
+        }
+
+        @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar" id="sidebar">
+        <a href="#" onclick="changePage('home')">🏠 Strona Główna</a>
+        <a href="#" onclick="changePage('yt')">📺 YouTuberzy</a>
+        <a href="#" onclick="changePage('spotify')">🎵 Spotify</a>
+        <a href="#" onclick="changePage('kod')">💻 Pamiętnik Kodera</a>
+    </div>
+
+    <div class="top-bar">
+        <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+        <div class="logo">FilipekSite</div>
+    </div>
+
+    <div class="main-container" id="content">
+        <div class="card">
+            <h1>Cześć Filipek! 🚀</h1>
+            <p>Twoja prywatna stronka już działa. Użyj menu po lewej, żeby zacząć, albo kliknij mikrofon!</p>
+        </div>
+    </div>
+
+    <div id="voice-status">Słucham...</div>
+
+    <div class="mic-wrap">
+        <button class="mic-button" id="mic-trigger">🎤</button>
+    </div>
+
+    <div class="footer-text">
+        Pamiętaj Filipku Julek Cię bardzo kocha
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        function changePage(page) {
+            const container = document.getElementById('content');
+            toggleSidebar();
+
+            if(page === 'home') {
+                container.innerHTML = `<div class="card"><h1>Cześć Filipek! 🚀</h1><p>Witaj w centrum dowodzenia!</p></div>`;
+            } else if(page === 'yt') {
+                container.innerHTML = `<div class="card"><h1>YouTuberzy 📺</h1><p>Kliknij mikrofon i powiedz "Otwórz YouTube"</p></div>`;
+            } else if(page === 'spotify') {
+                container.innerHTML = `<div class="card"><h1>Spotify 🎵</h1><p>Tu będzie Twoja playlista.</p></div>`;
+            } else if(page === 'kod') {
+                container.innerHTML = `<div class="card"><h1>Pamiętnik Kodera 💻</h1><p>Miejsce na Twoje hakerskie notatki.</p></div>`;
+            }
+        }
+
+        // VOICE COMMANDS
+        const btn = document.getElementById('mic-trigger');
+        const status = document.getElementById('voice-status');
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        if (SpeechRecognition) {
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'pl-PL';
+
+            btn.onclick = () => {
+                recognition.start();
+                status.innerText = "Słucham...";
+                status.style.display = "block";
+            };
+
+            recognition.onresult = (event) => {
+                const command = event.results[0][0].transcript.toLowerCase();
+                status.innerText = "Zrozumiałem: " + command;
+                
+                setTimeout(() => { status.style.display = "none"; }, 2000);
+
+                if (command.includes("brawl stars")) {
+                    window.location.href = "intent://#Intent;scheme=android-app;package=com.supercell.brawlstars;end";
+                } else if (command.includes("youtube")) {
+                    window.location.href = "intent://#Intent;scheme=android-app;package=com.google.android.youtube;end";
+                } else if (command.includes("tiktoka")) {
+                    window.location.href = "intent://#Intent;scheme=android-app;package=com.zhiliaoapp.musically;end";
+                }
+            };
+        }
+    </script>
+</body>
+</html>
 
