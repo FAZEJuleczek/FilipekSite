@@ -3,15 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FilipekSite v3.0 | Pro</title>
+    <title>FilipekOS v3.0 | Pro</title>
     <style>
         :root { --yellow: #FFD700; --blue: #0056b3; --dark: #121212; --hacker: #00ff41; --julek: #ff4444; }
         body { margin: 0; background: var(--yellow); font-family: 'Segoe UI', sans-serif; overflow: hidden; height: 100vh; }
         
+        /* SIDEBAR */
         .sidebar { position: fixed; left: -260px; top: 0; width: 260px; height: 100%; background: var(--dark); transition: 0.3s; z-index: 1000; padding-top: 60px; display: flex; flex-direction: column; }
         .sidebar.active { left: 0; }
         .sidebar a { display: block; padding: 15px 25px; color: white; text-decoration: none; border-bottom: 1px solid #333; font-size: 18px; }
-        .sidebar .admin-link { margin-top: auto; border-top: 2px solid #444; background: #1a1a1a; color: var(--julek); font-weight: bold; padding: 20px; text-align: center; cursor: pointer; }
+        
+        /* PRZYCISK DLA JULKA NA DOLE MENU */
+        .admin-link { margin-top: auto; background: #1a1a1a; color: var(--julek); font-weight: bold; padding: 20px; text-align: center; cursor: pointer; border-top: 2px solid #333; }
         
         .top-bar { background: var(--blue); color: white; padding: 15px; display: flex; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
         .menu-btn { background: none; border: none; color: white; font-size: 28px; cursor: pointer; margin-right: 15px; }
@@ -22,7 +25,7 @@
         .yt-item { background: #f9f9f9; padding: 10px; border-radius: 15px; border: 2px solid #eee; cursor: pointer; }
         .yt-icon { font-size: 35px; }
 
-        .hacker-box { background: #000; color: var(--hacker); padding: 12px; border-radius: 10px; text-align: left; font-family: monospace; border: 1px solid var(--hacker); font-size: 12px; margin-top: 10px; }
+        .hacker-box { background: #000; color: var(--hacker); padding: 12px; border-radius: 10px; text-align: left; font-family: monospace; border: 1px solid var(--hacker); font-size: 12px; margin-top: 10px; word-break: break-all; }
         input, textarea { width: 100%; margin-top: 10px; font-family: monospace; padding: 12px; box-sizing: border-box; border-radius: 8px; border: 2px solid #ddd; outline: none; }
         .btn-act { background: var(--hacker); color: #000; font-weight: bold; padding: 12px; border: none; width: 100%; border-radius: 8px; margin-top: 10px; cursor: pointer; }
 
@@ -42,13 +45,13 @@
 
     <div class="top-bar">
         <button class="menu-btn" onclick="toggle()">☰</button>
-        <b style="font-size: 20px;">FilipekOS v3.0</b>
+        <b style="font-size: 20px;">FilipekOS v3.1</b>
     </div>
 
     <div id="main" class="content">
         <div class="card">
             <h1 style="color: var(--blue);">Cześć Filipek! 🚀</h1>
-            <p>System operacyjny w przeglądarce gotowy.</p>
+            <p>System operacyjny gotowy.</p>
         </div>
     </div>
 
@@ -66,8 +69,10 @@
             const m = document.getElementById('main');
             document.getElementById('sidebar').classList.remove('active');
 
+            // SEKCJA DLA FILIPKA
             if(p === 'kod') {
-                if(prompt("Hasło Filipka:") !== KOD_FILIPKA) return;
+                const pass = prompt("Hasło Filipka:");
+                if(pass !== KOD_FILIPKA) return alert("Błędne hasło!");
                 let saved = localStorage.getItem('filip_data') || "Brak danych...";
                 m.innerHTML = `<div class="card" style="border-top-color: var(--hacker)">
                     <h1 style="color: var(--hacker); background:#000; padding:5px;">PAMIĘTNIK</h1>
@@ -76,20 +81,21 @@
                     <button class="btn-act" onclick="saveData()">ZAPISZ</button></div>`;
             }
 
+            // SEKCJA DLA CIEBIE (JULEK)
             if(p === 'julek') {
-                if(prompt("Hasło Admina:") !== KOD_JULKA) return;
+                const pass = prompt("Hasło ADMINA:");
+                if(pass !== KOD_JULKA) return alert("SECURITY BREACH!");
                 m.innerHTML = `<div class="card" style="border-top-color: var(--julek); background: #1a1a1a; color: white;">
                     <h1 style="color:var(--julek);">JULEK ADMIN 🛡️</h1>
-                    <div class="hacker-box" style="border-color:var(--julek); color:var(--julek);">TRYB: EXPLOIT_TESTER</div>
-                    
-                    <p style="margin-top:15px; font-size:12px;">Wpisz ID aplikacji (np. com.instagram.android):</p>
-                    <input type="text" id="app-id" placeholder="com.nazwa.apki" style="background:#333; color:white; border:none;">
-                    <button class="btn-act" style="background:var(--julek); color:white;" onclick="forceOpen()">ODPAL APKE PRZEZ INTENT</button>
+                    <p style="font-size:12px;">ODPALANIE DOWOLNEJ APKI (com.nazwa.apki):</p>
+                    <input type="text" id="app-id" placeholder="np. com.instagram.android" style="background:#333; color:white; border:none;">
+                    <button class="btn-act" style="background:var(--julek); color:white;" onclick="forceOpen()">URUCHOM APLIKACJĘ</button>
                     
                     <hr style="margin:20px 0; border:0.5px solid #444;">
-                    <p style="font-size:12px;">Testowanie Node.js (Base64):</p>
-                    <textarea id="payload" style="background:#333; color:white; border:none;" placeholder="Payload..."></textarea>
-                    <button class="btn-act" style="background:var(--julek); color:white;" onclick="runTest()">SYMULUJ EXEC()</button>
+                    <p style="font-size:12px;">NODE.js EXPLOIT LAB (Base64):</p>
+                    <div class="hacker-box" id="payload-result" style="border-color:var(--julek); color:var(--julek);">Czekam na kod...</div>
+                    <textarea id="node-code" style="background:#333; color:white; border:none;" placeholder="Wpisz kod Node.js..."></textarea>
+                    <button class="btn-act" style="background:var(--julek); color:white;" onclick="runNodeTest()">SYMULUJ PAYLOAD</button>
                 </div>`;
             }
 
@@ -107,26 +113,28 @@
 
         function forceOpen() {
             const id = document.getElementById('app-id').value;
-            if(!id) return;
-            // To jest hakerski sposób na otwieranie dowolnej apki z przeglądarki
-            window.location.href = `intent://#Intent;scheme=android-app;package=${id};end`;
+            if(id) window.location.href = `intent://#Intent;scheme=android-app;package=${id};end`;
         }
 
         function saveData() {
             const val = document.getElementById('inp').value;
             localStorage.setItem('filip_data', val);
-            alert("DANE ZAPISANE!");
+            alert("ZAPISANO!");
             move('kod');
         }
 
-        function runTest() {
-            const p = document.getElementById('payload').value;
-            alert("Payload wysłany do symulatora: " + btoa(p));
+        function runNodeTest() {
+            const code = document.getElementById('node-code').value;
+            const res = document.getElementById('payload-result');
+            if(!code) return;
+            // Generowanie payloadu w Base64 (przydatne do wstrzykiwania w Node.js)
+            const payload = btoa(unescape(encodeURIComponent(code)));
+            res.innerHTML = `PAYLOAD GENERATED (Base64):<br><span style="color:white; font-size:10px;">${payload}</span><br><br>Status: READY FOR INJECTION`;
         }
 
         function startSpeech() {
             const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if(!Speech) return;
+            if(!Speech) return alert("Twoja przeglądarka nie wspiera mikrofonu.");
             const rec = new Speech(); rec.lang = 'pl-PL';
             const st = document.getElementById('status');
             rec.start(); st.style.display="block"; st.innerText="Słucham...";
