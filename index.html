@@ -3,158 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FilipekOS v4.1 | Voice</title>
+    <title>FilipekOS v6.0 | Cloud Sync</title>
     <style>
         :root { --yellow: #FFD700; --blue: #0056b3; --dark: #121212; --hacker: #00ff41; --julek: #ff4444; }
         body { margin: 0; background: var(--yellow); font-family: 'Segoe UI', sans-serif; overflow: hidden; height: 100vh; }
         
         .sidebar { position: fixed; left: -260px; top: 0; width: 260px; height: 100%; background: var(--dark); transition: 0.3s; z-index: 1000; padding-top: 20px; display: flex; flex-direction: column; }
         .sidebar.active { left: 0; }
-        .sidebar div.nav-item { display: block; padding: 15px 25px; color: white; text-decoration: none; border-bottom: 1px solid #333; font-size: 18px; cursor: pointer; }
-        .admin-link { background: var(--julek); color: white !important; font-weight: bold; }
+        .sidebar div.nav-item { display: block; padding: 15px 25px; color: white; border-bottom: 1px solid #333; font-size: 18px; cursor: pointer; }
+        .admin-link { background: var(--julek); font-weight: bold; }
         
-        .top-bar { background: var(--blue); color: white; padding: 15px; display: flex; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        .top-bar { background: var(--blue); color: white; padding: 15px; display: flex; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .menu-btn { background: none; border: none; color: white; font-size: 28px; cursor: pointer; margin-right: 15px; }
-        .content { padding: 20px; display: flex; flex-direction: column; align-items: center; height: calc(100vh - 100px); overflow-y: auto; }
-        .card { background: white; width: 95%; max-width: 500px; padding: 20px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); text-align: center; border-top: 8px solid var(--blue); margin-bottom: 20px; box-sizing: border-box; }
-
-        .app-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; width: 100%; }
-        .app-item { background: #f0f0f0; padding: 20px; border-radius: 15px; font-weight: bold; color: var(--blue); border: 2px solid #ddd; text-align: center; box-shadow: 0 4px 0 #ccc; }
-        .app-item:active { transform: translateY(3px); box-shadow: none; background: #e0e0e0; }
-
-        .mic-btn { position: fixed; bottom: 30px; right: 30px; width: 75px; height: 75px; background: var(--blue); border-radius: 50%; border: 5px solid white; color: white; font-size: 35px; cursor: pointer; z-index: 1100; display: flex; justify-content: center; align-items: center; box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
-        .mic-btn.listening { background: var(--julek); animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
         
-        #status-bubble { position: fixed; bottom: 120px; right: 30px; background: var(--dark); color: white; padding: 10px 20px; border-radius: 20px; display: none; z-index: 1100; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .content { padding: 20px; display: flex; flex-direction: column; align-items: center; height: calc(100vh - 100px); overflow-y: auto; width: 100%; box-sizing: border-box; }
+        .card { background: white; width: 100%; max-width: 450px; padding: 25px; border-radius: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); text-align: center; border-top: 10px solid var(--blue); margin-bottom: 20px; box-sizing: border-box; }
 
-        input, textarea { width: 100%; margin-top: 10px; font-family: monospace; padding: 12px; box-sizing: border-box; border-radius: 8px; border: 2px solid #ddd; outline: none; }
-        .btn-act { background: var(--hacker); color: #000; font-weight: bold; padding: 12px; border: none; width: 100%; border-radius: 8px; margin-top: 10px; cursor: pointer; }
-        .footer { position: fixed; bottom: 8px; width: 100%; text-align: center; font-size: 11px; font-weight: bold; color: rgba(0,0,0,0.4); pointer-events: none; }
+        .app-grid, .yt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; width: 100%; }
+        .grid-item { background: #f8f9fa; padding: 20px; border-radius: 18px; font-weight: bold; color: var(--blue); border: 2px solid #eee; text-align: center; cursor: pointer; }
+        .grid-item:active { transform: scale(0.9); background: #eee; }
+
+        input, textarea { width: 100%; margin-top: 10px; padding: 12px; box-sizing: border-box; border-radius: 10px; border: 2px solid #ddd; font-size: 16px; }
+        .btn-act { background: var(--blue); color: white; font-weight: bold; padding: 15px; border: none; width: 100%; border-radius: 12px; margin-top: 10px; cursor: pointer; }
+        .mic-btn { position: fixed; bottom: 30px; right: 30px; width: 70px; height: 70px; background: var(--blue); border-radius: 50%; border: 5px solid white; color: white; font-size: 30px; z-index: 1100; display: flex; justify-content: center; align-items: center; box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+        #status { position: fixed; bottom: 110px; right: 30px; background: rgba(0,0,0,0.8); color: white; padding: 8px 15px; border-radius: 15px; display: none; z-index: 1100; }
     </style>
 </head>
 <body>
 
     <div class="sidebar" id="sidebar">
-        <div class="nav-item admin-link" onclick="move('julek')">🛡️ PANEL JULKA</div>
-        <div class="nav-item" onclick="move('home')">🏠 Home</div>
-        <div class="nav-item" onclick="move('apps')">🚀 APKI FILIPKA</div>
+        <div class="nav-item admin-link" onclick="move('julek')">🛡️ PANEL ADMINA</div>
+        <div class="nav-item" onclick="move('home')">🏠 Start</div>
+        <div class="nav-item" onclick="move('apps')">🚀 Gry i Apki</div>
         <div class="nav-item" onclick="move('yt')">📺 YouTuberzy</div>
-        <div class="nav-item" onclick="move('kod')">💻 Pamiętnik</div>
+        <div class="nav-item" onclick="move('kod')">📖 Pamiętnik</div>
     </div>
 
     <div class="top-bar">
         <button class="menu-btn" onclick="toggle()">☰</button>
-        <b style="font-size: 20px;">FilipekOS v4.1</b>
+        <b>FilipekOS Cloud Sync</b>
     </div>
 
     <div id="main" class="content">
-        <div class="card">
-            <h1>Cześć Filipek! 🚀</h1>
-            <p>Użyj mikrofonu 🎤 żeby odpalić apkę!</p>
-        </div>
+        <div class="card"><h1>Łączenie z chmurą... ☁️</h1></div>
     </div>
 
-    <div id="status-bubble">Słucham...</div>
-    <button class="mic-btn" id="mic-trigger" onclick="startVoice()">🎤</button>
-    <div class="footer">Pamiętaj Filipku Julek Cię bardzo kocha</div>
+    <div id="status">Słucham...</div>
+    <button class="mic-btn" onclick="startVoice()">🎤</button>
 
-    <script>
-        const KOD_FILIPKA = "5522";
-        const KOD_JULKA = "2907";
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, set, onValue, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        function toggle() { document.getElementById('sidebar').classList.toggle('active'); }
+        const firebaseConfig = {
+            apiKey: "AIzaSyCAqUxJwhPUjpr0PeCCcKUtohCEDAfeopk",
+            authDomain: "filipek-site.firebaseapp.com",
+            databaseURL: "https://filipek-site-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "filipek-site",
+            storageBucket: "filipek-site.firebasestorage.app",
+            messagingSenderId: "780672431490",
+            appId: "1:780672431490:web:f896fa960bfa6efafe0b9b"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Zmienne globalne
+        let currentApps = [];
+        window.move = move; // Udostępnienie funkcji dla HTML
+
+        // SYNCHRONIZACJA APEK W CZASIE RZECZYWISTYM
+        onValue(ref(db, 'apps'), (snapshot) => {
+            const data = snapshot.val();
+            currentApps = data ? Object.values(data) : [];
+            console.log("Sync Apps:", currentApps);
+            if(window.currentPage === 'apps') renderApps();
+        });
 
         function move(p) {
+            window.currentPage = p;
             const m = document.getElementById('main');
             document.getElementById('sidebar').classList.remove('active');
 
-            if(p === 'julek') {
-                if(prompt("Hasło ADMINA:") !== KOD_JULKA) return;
-                m.innerHTML = `<div class="card" style="border-top-color: #ff4444; background: #1a1a1a; color: white;">
-                    <h1 style="color:#ff4444;">KREATOR APEK 🛠️</h1>
-                    <input type="text" id="new-app-name" placeholder="Nazwa (np. Minecraft)">
-                    <input type="text" id="new-app-id" placeholder="ID (np. com.mojang.minecraftpe)">
-                    <button class="btn-act" style="background:#ff4444; color:white;" onclick="addApp()">DODAJ DO BAZY</button>
-                    <hr style="margin:20px 0;">
-                    <button class="btn-act" style="background:#444; color:white;" onclick="clearApps()">WYCZYŚĆ BAZĘ</button>
-                </div>`;
-            }
+            if(p === 'home') m.innerHTML = `<div class="card"><h1>Start 🏠</h1><p>Wszystko zsynchronizowane!</p></div>`;
+            
+            if(p === 'apps') renderApps();
 
-            if(p === 'apps') {
-                let apps = JSON.parse(localStorage.getItem('filipek_apps') || "[]");
-                let html = `<div class="card"><h1>Twoje Apki 🚀</h1><div class="app-grid">`;
-                if(apps.length === 0) html += `<p style="grid-column: 1/3">Nic tu nie ma. Poproś Julka o dodanie gier!</p>`;
-                apps.forEach(app => {
-                    html += `<div class="app-item" onclick="openApp('${app.id}')">📱<br>${app.name}</div>`;
-                });
-                html += `</div></div>`;
-                m.innerHTML = html;
+            if(p === 'yt') {
+                m.innerHTML = `<div class="card"><h1>YouTuberzy 📺</h1><div class="yt-grid">
+                    <div class="grid-item" onclick="window.open('https://youtube.com/@Wojan')">🧊 Wojan</div>
+                    <div class="grid-item" onclick="window.open('https://youtube.com/@Palion')">🔥 Palion</div>
+                    <div class="grid-item" onclick="window.open('https://youtube.com/@WerkaAferka')">💅 Werka</div>
+                </div></div>`;
             }
 
             if(p === 'kod') {
-                if(prompt("Hasło:") !== KOD_FILIPKA) return;
-                let saved = localStorage.getItem('filip_data') || "...";
-                m.innerHTML = `<div class="card"><h1>Pamiętnik</h1><textarea id="inp">${saved}</textarea><button class="btn-act" onclick="saveData()">ZAPISZ</button></div>`;
+                if(prompt("Hasło:") !== "5522") return;
+                onValue(ref(db, 'pamietnik'), (snap) => {
+                    m.innerHTML = `<div class="card"><h1>📖 Cloud Log</h1>
+                        <textarea id="inp" rows="10">${snap.val() || ""}</textarea>
+                        <button class="btn-act" onclick="saveCloudText()">ZAPISZ W CHMURZE</button></div>`;
+                }, {onlyOnce: true});
             }
-            if(p === 'home') m.innerHTML = `<div class="card"><h1>Home 🏠</h1></div>`;
-            if(p === 'yt') m.innerHTML = `<div class="card"><h1>YouTuberzy 📺</h1></div>`;
+
+            if(p === 'julek') {
+                if(prompt("Hasło ADMIN:") !== "2907") return;
+                m.innerHTML = `<div class="card" style="border-color:var(--julek)">
+                    <h1 style="color:var(--julek)">ADMIN CLOUD 🛡️</h1>
+                    <input type="text" id="n" placeholder="Nazwa apki">
+                    <input type="text" id="i" placeholder="ID (com.package)">
+                    <button class="btn-act" style="background:var(--julek)" onclick="addAppCloud()">DODAJ DLA WSZYSTKICH</button>
+                    <button class="btn-act" style="background:#444" onclick="clearAppsCloud()">USUŃ WSZYSTKIE APKI</button>
+                </div>`;
+            }
         }
 
-        function addApp() {
-            const name = document.getElementById('new-app-name').value;
-            const id = document.getElementById('new-app-id').value;
-            if(!name || !id) return;
-            let apps = JSON.parse(localStorage.getItem('filipek_apps') || "[]");
-            apps.push({ name: name.toLowerCase(), id: id });
-            localStorage.setItem('filipek_apps', JSON.stringify(apps));
-            alert("Dodano!");
-            move('apps');
+        function renderApps() {
+            const m = document.getElementById('main');
+            let html = `<div class="card"><h1>Gry i Apki 🚀</h1><div class="app-grid">`;
+            currentApps.forEach(app => {
+                html += `<div class="grid-item" onclick="window.location.href='intent://#Intent;scheme=android-app;package=${app.id};end'">📱<br>${app.name}</div>`;
+            });
+            html += `</div></div>`;
+            m.innerHTML = html;
         }
 
-        function openApp(id) {
-            window.location.href = `intent://#Intent;scheme=android-app;package=${id};end`;
-        }
+        window.addAppCloud = () => {
+            const name = document.getElementById('n').value;
+            const id = document.getElementById('i').value;
+            if(name && id) {
+                push(ref(db, 'apps'), { name, id });
+                alert("Wysłano do chmury!");
+            }
+        };
 
-        function startVoice() {
+        window.clearAppsCloud = () => {
+            if(confirm("Wyczyścić chmurę?")) set(ref(db, 'apps'), null);
+        };
+
+        window.saveCloudText = () => {
+            set(ref(db, 'pamietnik'), document.getElementById('inp').value);
+            alert("Zapisano w chmurze!");
+        };
+
+        window.toggle = () => document.getElementById('sidebar').classList.toggle('active');
+        
+        // GŁOS
+        window.startVoice = () => {
             const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if(!Speech) return alert("Mikrofon nie działa w tej przeglądarce.");
-
-            const rec = new Speech();
-            rec.lang = 'pl-PL';
-            const btn = document.getElementById('mic-trigger');
-            const bubble = document.getElementById('status-bubble');
-
-            rec.onstart = () => { btn.classList.add('listening'); bubble.style.display = "block"; bubble.innerText = "Słucham..."; };
-            rec.onend = () => { btn.classList.remove('listening'); setTimeout(() => bubble.style.display="none", 2000); };
-
+            if(!Speech) return;
+            const rec = new Speech(); rec.lang = 'pl-PL';
+            const st = document.getElementById('status');
+            rec.start(); st.style.display="block";
             rec.onresult = (e) => {
-                const speechResult = e.results[0][0].transcript.toLowerCase();
-                bubble.innerText = "Powiedziałeś: " + speechResult;
-                
-                // Szukaj w dodanych apkach
-                let apps = JSON.parse(localStorage.getItem('filipek_apps') || "[]");
-                let found = apps.find(a => speechResult.includes(a.name));
-
-                if(found) {
-                    openApp(found.id);
-                } else if(speechResult.includes("youtube")) {
-                    openApp("com.google.android.youtube");
-                } else {
-                    bubble.innerText = "Nie znam tej apki!";
-                }
+                const cmd = e.results[0][0].transcript.toLowerCase();
+                let found = currentApps.find(a => cmd.includes(a.name.toLowerCase()));
+                if(found) window.location.href = `intent://#Intent;scheme=android-app;package=${found.id};end`;
+                st.style.display="none";
             };
-            rec.start();
-        }
+        };
 
-        function clearApps() {
-            if(confirm("Usunąć wszystko?")) { localStorage.removeItem('filipek_apps'); move('julek'); }
-        }
-
-        function saveData() {
-            localStorage.setItem('filip_data', document.getElementById('inp').value);
-            alert("Zapisano!");
-        }
+        // Start strony
+        move('home');
     </script>
 </body>
 </html>
