@@ -3,27 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FilipekOS v3.0 | Pro</title>
+    <title>FilipekOS v3.2</title>
     <style>
         :root { --yellow: #FFD700; --blue: #0056b3; --dark: #121212; --hacker: #00ff41; --julek: #ff4444; }
         body { margin: 0; background: var(--yellow); font-family: 'Segoe UI', sans-serif; overflow: hidden; height: 100vh; }
         
         /* SIDEBAR */
-        .sidebar { position: fixed; left: -260px; top: 0; width: 260px; height: 100%; background: var(--dark); transition: 0.3s; z-index: 1000; padding-top: 60px; display: flex; flex-direction: column; }
+        .sidebar { position: fixed; left: -260px; top: 0; width: 260px; height: 100%; background: var(--dark); transition: 0.3s; z-index: 1000; padding-top: 20px; display: flex; flex-direction: column; }
         .sidebar.active { left: 0; }
         .sidebar a { display: block; padding: 15px 25px; color: white; text-decoration: none; border-bottom: 1px solid #333; font-size: 18px; }
         
-        /* PRZYCISK DLA JULKA NA DOLE MENU */
-        .admin-link { margin-top: auto; background: #1a1a1a; color: var(--julek); font-weight: bold; padding: 20px; text-align: center; cursor: pointer; border-top: 2px solid #333; }
+        /* PRZYCISK DLA JULKA - TERAZ NA GÓRZE DLA TESTU */
+        .admin-link { background: #ff4444; color: white; font-weight: bold; padding: 15px 25px; text-align: left; cursor: pointer; border-bottom: 1px solid #333; font-size: 18px; }
         
         .top-bar { background: var(--blue); color: white; padding: 15px; display: flex; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
         .menu-btn { background: none; border: none; color: white; font-size: 28px; cursor: pointer; margin-right: 15px; }
         .content { padding: 20px; display: flex; flex-direction: column; align-items: center; height: calc(100vh - 100px); overflow-y: auto; }
         .card { background: white; width: 95%; max-width: 500px; padding: 20px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); text-align: center; border-top: 8px solid var(--blue); margin-bottom: 20px; box-sizing: border-box; }
-
-        .yt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
-        .yt-item { background: #f9f9f9; padding: 10px; border-radius: 15px; border: 2px solid #eee; cursor: pointer; }
-        .yt-icon { font-size: 35px; }
 
         .hacker-box { background: #000; color: var(--hacker); padding: 12px; border-radius: 10px; text-align: left; font-family: monospace; border: 1px solid var(--hacker); font-size: 12px; margin-top: 10px; word-break: break-all; }
         input, textarea { width: 100%; margin-top: 10px; font-family: monospace; padding: 12px; box-sizing: border-box; border-radius: 8px; border: 2px solid #ddd; outline: none; }
@@ -37,21 +33,21 @@
 <body>
 
     <div class="sidebar" id="sidebar">
+        <div class="admin-link" onclick="move('julek')">🛡️ PANEL JULKA</div>
         <a href="#" onclick="move('home')">🏠 Home</a>
         <a href="#" onclick="move('yt')">📺 YouTuberzy</a>
         <a href="#" onclick="move('kod')">💻 Pamiętnik Filipka</a>
-        <div class="admin-link" onclick="move('julek')">🛡️ (TYLKO DLA JULKA)</div>
     </div>
 
     <div class="top-bar">
         <button class="menu-btn" onclick="toggle()">☰</button>
-        <b style="font-size: 20px;">FilipekOS v3.1</b>
+        <b style="font-size: 20px;">FilipekOS v3.2</b>
     </div>
 
     <div id="main" class="content">
         <div class="card">
-            <h1 style="color: var(--blue);">Cześć Filipek! 🚀</h1>
-            <p>System operacyjny gotowy.</p>
+            <h1 style="color: var(--blue);">Baza zaktualizowana 🚀</h1>
+            <p>Sprawdź menu po lewej.</p>
         </div>
     </div>
 
@@ -69,46 +65,29 @@
             const m = document.getElementById('main');
             document.getElementById('sidebar').classList.remove('active');
 
-            // SEKCJA DLA FILIPKA
-            if(p === 'kod') {
-                const pass = prompt("Hasło Filipka:");
-                if(pass !== KOD_FILIPKA) return alert("Błędne hasło!");
-                let saved = localStorage.getItem('filip_data') || "Brak danych...";
-                m.innerHTML = `<div class="card" style="border-top-color: var(--hacker)">
-                    <h1 style="color: var(--hacker); background:#000; padding:5px;">PAMIĘTNIK</h1>
-                    <div class="hacker-box">${saved}</div>
-                    <textarea id="inp" placeholder="Napisz coś..."></textarea>
-                    <button class="btn-act" onclick="saveData()">ZAPISZ</button></div>`;
-            }
-
-            // SEKCJA DLA CIEBIE (JULEK)
             if(p === 'julek') {
                 const pass = prompt("Hasło ADMINA:");
-                if(pass !== KOD_JULKA) return alert("SECURITY BREACH!");
-                m.innerHTML = `<div class="card" style="border-top-color: var(--julek); background: #1a1a1a; color: white;">
-                    <h1 style="color:var(--julek);">JULEK ADMIN 🛡️</h1>
-                    <p style="font-size:12px;">ODPALANIE DOWOLNEJ APKI (com.nazwa.apki):</p>
-                    <input type="text" id="app-id" placeholder="np. com.instagram.android" style="background:#333; color:white; border:none;">
-                    <button class="btn-act" style="background:var(--julek); color:white;" onclick="forceOpen()">URUCHOM APLIKACJĘ</button>
-                    
-                    <hr style="margin:20px 0; border:0.5px solid #444;">
-                    <p style="font-size:12px;">NODE.js EXPLOIT LAB (Base64):</p>
-                    <div class="hacker-box" id="payload-result" style="border-color:var(--julek); color:var(--julek);">Czekam na kod...</div>
-                    <textarea id="node-code" style="background:#333; color:white; border:none;" placeholder="Wpisz kod Node.js..."></textarea>
-                    <button class="btn-act" style="background:var(--julek); color:white;" onclick="runNodeTest()">SYMULUJ PAYLOAD</button>
+                if(pass !== KOD_JULKA) return alert("ODMOWA!");
+                m.innerHTML = `<div class="card" style="border-top-color: #ff4444; background: #1a1a1a; color: white;">
+                    <h1 style="color:#ff4444;">ADMIN LAB 🛡️</h1>
+                    <input type="text" id="app-id" placeholder="ID apki (np. com.android.settings)" style="background:#333; color:white;">
+                    <button class="btn-act" style="background:#ff4444; color:white;" onclick="forceOpen()">ODPAL APKE</button>
+                    <hr style="margin:20px 0;">
+                    <div class="hacker-box" id="res" style="color:#ff4444;">Node.js Lab</div>
+                    <textarea id="node-code" style="background:#333; color:white;" placeholder="Kod Node.js..."></textarea>
+                    <button class="btn-act" style="background:#ff4444; color:white;" onclick="runNodeTest()">GENERUJ PAYLOAD</button>
                 </div>`;
             }
 
-            if(p === 'home') m.innerHTML = `<div class="card"><h1>Home 🏠</h1><p>Wszystkie systemy sprawne.</p></div>`;
-            
-            if(p === 'yt') {
-                m.innerHTML = `<div class="card"><h1>YouTuberzy 📺</h1><div class="yt-grid">
-                    <div class="yt-item" onclick="window.open('https://www.youtube.com/@WerkaAferka/videos')"><span class="yt-icon">💅</span><p>Werka</p></div>
-                    <div class="yt-item" onclick="window.open('https://www.youtube.com/@Wojan/videos')"><span class="yt-icon">🧊</span><p>Wojan</p></div>
-                    <div class="yt-item" onclick="window.open('https://www.youtube.com/@Palion/videos')"><span class="yt-icon">🔥</span><p>Palion</p></div>
-                    <div class="yt-item" onclick="window.open('https://www.youtube.com/@Rembol/videos')"><span class="yt-icon">🎒</span><p>Rembol</p></div>
-                </div></div>`;
+            if(p === 'kod') {
+                const pass = prompt("Hasło Filipka:");
+                if(pass !== KOD_FILIPKA) return;
+                let saved = localStorage.getItem('filip_data') || "...";
+                m.innerHTML = `<div class="card"><h1>Pamiętnik</h1><textarea id="inp">${saved}</textarea><button class="btn-act" onclick="saveData()">ZAPISZ</button></div>`;
             }
+
+            if(p === 'home') m.innerHTML = `<div class="card"><h1>Home 🏠</h1></div>`;
+            if(p === 'yt') m.innerHTML = `<div class="card"><h1>YouTuberzy 📺</h1></div>`;
         }
 
         function forceOpen() {
@@ -116,33 +95,24 @@
             if(id) window.location.href = `intent://#Intent;scheme=android-app;package=${id};end`;
         }
 
-        function saveData() {
-            const val = document.getElementById('inp').value;
-            localStorage.setItem('filip_data', val);
-            alert("ZAPISANO!");
-            move('kod');
-        }
-
         function runNodeTest() {
             const code = document.getElementById('node-code').value;
-            const res = document.getElementById('payload-result');
-            if(!code) return;
-            // Generowanie payloadu w Base64 (przydatne do wstrzykiwania w Node.js)
-            const payload = btoa(unescape(encodeURIComponent(code)));
-            res.innerHTML = `PAYLOAD GENERATED (Base64):<br><span style="color:white; font-size:10px;">${payload}</span><br><br>Status: READY FOR INJECTION`;
+            document.getElementById('res').innerText = "BASE64: " + btoa(code);
+        }
+
+        function saveData() {
+            localStorage.setItem('filip_data', document.getElementById('inp').value);
+            alert("Zapisano!");
         }
 
         function startSpeech() {
             const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if(!Speech) return alert("Twoja przeglądarka nie wspiera mikrofonu.");
+            if(!Speech) return;
             const rec = new Speech(); rec.lang = 'pl-PL';
-            const st = document.getElementById('status');
-            rec.start(); st.style.display="block"; st.innerText="Słucham...";
+            rec.start();
             rec.onresult = (e) => {
                 const cmd = e.results[0][0].transcript.toLowerCase();
-                if(cmd.includes("brawl stars")) window.location.href="intent://#Intent;scheme=android-app;package=com.supercell.brawlstars;end";
                 if(cmd.includes("youtube")) window.location.href="intent://#Intent;scheme=android-app;package=com.google.android.youtube;end";
-                st.style.display="none";
             }
         }
     </script>
