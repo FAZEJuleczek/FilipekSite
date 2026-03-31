@@ -3,56 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FilipekOS v3.2</title>
+    <title>FilipekOS v4.1 | Voice</title>
     <style>
         :root { --yellow: #FFD700; --blue: #0056b3; --dark: #121212; --hacker: #00ff41; --julek: #ff4444; }
         body { margin: 0; background: var(--yellow); font-family: 'Segoe UI', sans-serif; overflow: hidden; height: 100vh; }
         
-        /* SIDEBAR */
         .sidebar { position: fixed; left: -260px; top: 0; width: 260px; height: 100%; background: var(--dark); transition: 0.3s; z-index: 1000; padding-top: 20px; display: flex; flex-direction: column; }
         .sidebar.active { left: 0; }
-        .sidebar a { display: block; padding: 15px 25px; color: white; text-decoration: none; border-bottom: 1px solid #333; font-size: 18px; }
-        
-        /* PRZYCISK DLA JULKA - TERAZ NA GÓRZE DLA TESTU */
-        .admin-link { background: #ff4444; color: white; font-weight: bold; padding: 15px 25px; text-align: left; cursor: pointer; border-bottom: 1px solid #333; font-size: 18px; }
+        .sidebar div.nav-item { display: block; padding: 15px 25px; color: white; text-decoration: none; border-bottom: 1px solid #333; font-size: 18px; cursor: pointer; }
+        .admin-link { background: var(--julek); color: white !important; font-weight: bold; }
         
         .top-bar { background: var(--blue); color: white; padding: 15px; display: flex; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
         .menu-btn { background: none; border: none; color: white; font-size: 28px; cursor: pointer; margin-right: 15px; }
         .content { padding: 20px; display: flex; flex-direction: column; align-items: center; height: calc(100vh - 100px); overflow-y: auto; }
         .card { background: white; width: 95%; max-width: 500px; padding: 20px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); text-align: center; border-top: 8px solid var(--blue); margin-bottom: 20px; box-sizing: border-box; }
 
-        .hacker-box { background: #000; color: var(--hacker); padding: 12px; border-radius: 10px; text-align: left; font-family: monospace; border: 1px solid var(--hacker); font-size: 12px; margin-top: 10px; word-break: break-all; }
+        .app-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; width: 100%; }
+        .app-item { background: #f0f0f0; padding: 20px; border-radius: 15px; font-weight: bold; color: var(--blue); border: 2px solid #ddd; text-align: center; box-shadow: 0 4px 0 #ccc; }
+        .app-item:active { transform: translateY(3px); box-shadow: none; background: #e0e0e0; }
+
+        .mic-btn { position: fixed; bottom: 30px; right: 30px; width: 75px; height: 75px; background: var(--blue); border-radius: 50%; border: 5px solid white; color: white; font-size: 35px; cursor: pointer; z-index: 1100; display: flex; justify-content: center; align-items: center; box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+        .mic-btn.listening { background: var(--julek); animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        
+        #status-bubble { position: fixed; bottom: 120px; right: 30px; background: var(--dark); color: white; padding: 10px 20px; border-radius: 20px; display: none; z-index: 1100; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+
         input, textarea { width: 100%; margin-top: 10px; font-family: monospace; padding: 12px; box-sizing: border-box; border-radius: 8px; border: 2px solid #ddd; outline: none; }
         .btn-act { background: var(--hacker); color: #000; font-weight: bold; padding: 12px; border: none; width: 100%; border-radius: 8px; margin-top: 10px; cursor: pointer; }
-
-        .mic-btn { position: fixed; bottom: 30px; right: 30px; width: 70px; height: 70px; background: var(--blue); border-radius: 50%; border: 5px solid white; color: white; font-size: 30px; z-index: 1100; display: flex; justify-content: center; align-items: center; box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
-        #status { position: fixed; bottom: 110px; right: 30px; background: var(--dark); color: white; padding: 10px 15px; border-radius: 12px; display: none; font-size: 13px; z-index: 1100; }
         .footer { position: fixed; bottom: 8px; width: 100%; text-align: center; font-size: 11px; font-weight: bold; color: rgba(0,0,0,0.4); pointer-events: none; }
     </style>
 </head>
 <body>
 
     <div class="sidebar" id="sidebar">
-        <div class="admin-link" onclick="move('julek')">🛡️ PANEL JULKA</div>
-        <a href="#" onclick="move('home')">🏠 Home</a>
-        <a href="#" onclick="move('yt')">📺 YouTuberzy</a>
-        <a href="#" onclick="move('kod')">💻 Pamiętnik Filipka</a>
+        <div class="nav-item admin-link" onclick="move('julek')">🛡️ PANEL JULKA</div>
+        <div class="nav-item" onclick="move('home')">🏠 Home</div>
+        <div class="nav-item" onclick="move('apps')">🚀 APKI FILIPKA</div>
+        <div class="nav-item" onclick="move('yt')">📺 YouTuberzy</div>
+        <div class="nav-item" onclick="move('kod')">💻 Pamiętnik</div>
     </div>
 
     <div class="top-bar">
         <button class="menu-btn" onclick="toggle()">☰</button>
-        <b style="font-size: 20px;">FilipekOS v3.2</b>
+        <b style="font-size: 20px;">FilipekOS v4.1</b>
     </div>
 
     <div id="main" class="content">
         <div class="card">
-            <h1 style="color: var(--blue);">Baza zaktualizowana 🚀</h1>
-            <p>Sprawdź menu po lewej.</p>
+            <h1>Cześć Filipek! 🚀</h1>
+            <p>Użyj mikrofonu 🎤 żeby odpalić apkę!</p>
         </div>
     </div>
 
-    <div id="status">Słucham...</div>
-    <button class="mic-btn" onclick="startSpeech()">🎤</button>
+    <div id="status-bubble">Słucham...</div>
+    <button class="mic-btn" id="mic-trigger" onclick="startVoice()">🎤</button>
     <div class="footer">Pamiętaj Filipku Julek Cię bardzo kocha</div>
 
     <script>
@@ -66,54 +70,90 @@
             document.getElementById('sidebar').classList.remove('active');
 
             if(p === 'julek') {
-                const pass = prompt("Hasło ADMINA:");
-                if(pass !== KOD_JULKA) return alert("ODMOWA!");
+                if(prompt("Hasło ADMINA:") !== KOD_JULKA) return;
                 m.innerHTML = `<div class="card" style="border-top-color: #ff4444; background: #1a1a1a; color: white;">
-                    <h1 style="color:#ff4444;">ADMIN LAB 🛡️</h1>
-                    <input type="text" id="app-id" placeholder="ID apki (np. com.android.settings)" style="background:#333; color:white;">
-                    <button class="btn-act" style="background:#ff4444; color:white;" onclick="forceOpen()">ODPAL APKE</button>
+                    <h1 style="color:#ff4444;">KREATOR APEK 🛠️</h1>
+                    <input type="text" id="new-app-name" placeholder="Nazwa (np. Minecraft)">
+                    <input type="text" id="new-app-id" placeholder="ID (np. com.mojang.minecraftpe)">
+                    <button class="btn-act" style="background:#ff4444; color:white;" onclick="addApp()">DODAJ DO BAZY</button>
                     <hr style="margin:20px 0;">
-                    <div class="hacker-box" id="res" style="color:#ff4444;">Node.js Lab</div>
-                    <textarea id="node-code" style="background:#333; color:white;" placeholder="Kod Node.js..."></textarea>
-                    <button class="btn-act" style="background:#ff4444; color:white;" onclick="runNodeTest()">GENERUJ PAYLOAD</button>
+                    <button class="btn-act" style="background:#444; color:white;" onclick="clearApps()">WYCZYŚĆ BAZĘ</button>
                 </div>`;
             }
 
+            if(p === 'apps') {
+                let apps = JSON.parse(localStorage.getItem('filipek_apps') || "[]");
+                let html = `<div class="card"><h1>Twoje Apki 🚀</h1><div class="app-grid">`;
+                if(apps.length === 0) html += `<p style="grid-column: 1/3">Nic tu nie ma. Poproś Julka o dodanie gier!</p>`;
+                apps.forEach(app => {
+                    html += `<div class="app-item" onclick="openApp('${app.id}')">📱<br>${app.name}</div>`;
+                });
+                html += `</div></div>`;
+                m.innerHTML = html;
+            }
+
             if(p === 'kod') {
-                const pass = prompt("Hasło Filipka:");
-                if(pass !== KOD_FILIPKA) return;
+                if(prompt("Hasło:") !== KOD_FILIPKA) return;
                 let saved = localStorage.getItem('filip_data') || "...";
                 m.innerHTML = `<div class="card"><h1>Pamiętnik</h1><textarea id="inp">${saved}</textarea><button class="btn-act" onclick="saveData()">ZAPISZ</button></div>`;
             }
-
             if(p === 'home') m.innerHTML = `<div class="card"><h1>Home 🏠</h1></div>`;
             if(p === 'yt') m.innerHTML = `<div class="card"><h1>YouTuberzy 📺</h1></div>`;
         }
 
-        function forceOpen() {
-            const id = document.getElementById('app-id').value;
-            if(id) window.location.href = `intent://#Intent;scheme=android-app;package=${id};end`;
+        function addApp() {
+            const name = document.getElementById('new-app-name').value;
+            const id = document.getElementById('new-app-id').value;
+            if(!name || !id) return;
+            let apps = JSON.parse(localStorage.getItem('filipek_apps') || "[]");
+            apps.push({ name: name.toLowerCase(), id: id });
+            localStorage.setItem('filipek_apps', JSON.stringify(apps));
+            alert("Dodano!");
+            move('apps');
         }
 
-        function runNodeTest() {
-            const code = document.getElementById('node-code').value;
-            document.getElementById('res').innerText = "BASE64: " + btoa(code);
+        function openApp(id) {
+            window.location.href = `intent://#Intent;scheme=android-app;package=${id};end`;
+        }
+
+        function startVoice() {
+            const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if(!Speech) return alert("Mikrofon nie działa w tej przeglądarce.");
+
+            const rec = new Speech();
+            rec.lang = 'pl-PL';
+            const btn = document.getElementById('mic-trigger');
+            const bubble = document.getElementById('status-bubble');
+
+            rec.onstart = () => { btn.classList.add('listening'); bubble.style.display = "block"; bubble.innerText = "Słucham..."; };
+            rec.onend = () => { btn.classList.remove('listening'); setTimeout(() => bubble.style.display="none", 2000); };
+
+            rec.onresult = (e) => {
+                const speechResult = e.results[0][0].transcript.toLowerCase();
+                bubble.innerText = "Powiedziałeś: " + speechResult;
+                
+                // Szukaj w dodanych apkach
+                let apps = JSON.parse(localStorage.getItem('filipek_apps') || "[]");
+                let found = apps.find(a => speechResult.includes(a.name));
+
+                if(found) {
+                    openApp(found.id);
+                } else if(speechResult.includes("youtube")) {
+                    openApp("com.google.android.youtube");
+                } else {
+                    bubble.innerText = "Nie znam tej apki!";
+                }
+            };
+            rec.start();
+        }
+
+        function clearApps() {
+            if(confirm("Usunąć wszystko?")) { localStorage.removeItem('filipek_apps'); move('julek'); }
         }
 
         function saveData() {
             localStorage.setItem('filip_data', document.getElementById('inp').value);
             alert("Zapisano!");
-        }
-
-        function startSpeech() {
-            const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if(!Speech) return;
-            const rec = new Speech(); rec.lang = 'pl-PL';
-            rec.start();
-            rec.onresult = (e) => {
-                const cmd = e.results[0][0].transcript.toLowerCase();
-                if(cmd.includes("youtube")) window.location.href="intent://#Intent;scheme=android-app;package=com.google.android.youtube;end";
-            }
         }
     </script>
 </body>
