@@ -5,32 +5,68 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>FilipekSite | Home</title>
     <style>
-        :root { --yellow: #FFD700; --blue: #0056b3; --dark: #121212; --white: #ffffff; }
+        :root { --yellow: #FFD700; --blue: #0056b3; --dark: #121212; --white: #ffffff; --hacker-green: #00ff41; }
         body { margin: 0; background: var(--yellow); font-family: 'Segoe UI', sans-serif; overflow: hidden; height: 100vh; }
         
-        .sidebar { position: fixed; left: -260px; top: 0; width: 260px; height: 100%; background: var(--dark); transition: 0.3s; z-index: 1000; padding-top: 60px; box-shadow: 5px 0 15px rgba(0,0,0,0.3); }
+        /* SIDEBAR */
+        .sidebar { position: fixed; left: -260px; top: 0; width: 260px; height: 100%; background: var(--dark); transition: 0.3s; z-index: 1000; padding-top: 60px; box-shadow: 5px 0 15px rgba(0,0,0,0.5); }
         .sidebar.active { left: 0; }
         .sidebar a { display: block; padding: 15px 25px; color: white; text-decoration: none; border-bottom: 1px solid #333; font-size: 18px; }
         
+        /* UI */
         .top-bar { background: var(--blue); color: white; padding: 15px; display: flex; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
         .menu-btn { background: none; border: none; color: white; font-size: 28px; cursor: pointer; margin-right: 15px; }
         .content { padding: 20px; display: flex; flex-direction: column; align-items: center; height: calc(100vh - 100px); overflow-y: auto; }
-        .card { background: white; width: 90%; max-width: 500px; padding: 25px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); text-align: center; border-top: 8px solid var(--blue); margin-bottom: 20px; }
+        .card { background: white; width: 95%; max-width: 500px; padding: 20px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); text-align: center; border-top: 8px solid var(--blue); margin-bottom: 20px; box-sizing: border-box; }
 
-        /* POPRAWIONY GRID YOUTUBERÓW */
-        .yt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
-        .yt-item { background: #f9f9f9; padding: 15px; border-radius: 15px; border: 2px solid #eee; cursor: pointer; transition: 0.2s; }
-        .yt-item:active { transform: scale(0.95); background: #eee; }
-        .yt-icon { font-size: 40px; margin-bottom: 5px; display: block; }
-        .yt-item p { font-weight: bold; margin: 0; font-size: 14px; color: var(--blue); }
+        /* YT GRID */
+        .yt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
+        .yt-item { background: #f9f9f9; padding: 10px; border-radius: 15px; border: 2px solid #eee; cursor: pointer; }
+        .yt-icon { font-size: 35px; }
+        .yt-item p { font-weight: bold; margin: 5px 0 0 0; font-size: 13px; color: var(--blue); }
 
-        .mic-btn { position: fixed; bottom: 30px; right: 30px; width: 75px; height: 75px; background: var(--blue); border-radius: 50%; border: 5px solid white; color: white; font-size: 35px; cursor: pointer; z-index: 1100; display: flex; justify-content: center; align-items: center; box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
-        #status { position: fixed; bottom: 120px; right: 30px; background: var(--dark); color: white; padding: 12px 20px; border-radius: 15px; display: none; font-size: 14px; z-index: 1100; }
-        
-        .footer { position: fixed; bottom: 10px; width: 100%; text-align: center; font-size: 12px; font-weight: bold; color: rgba(0,0,0,0.4); pointer-events: none; }
-        
-        textarea { width: 100%; height: 120px; border-radius: 10px; border: 1px solid #ccc; padding: 10px; margin-top: 10px; font-family: monospace; background: #fafafa; box-sizing: border-box; }
-        .btn-save { background: var(--blue); color: white; border: none; padding: 12px 25px; border-radius: 10px; margin-top: 10px; cursor: pointer; font-weight: bold; width: 100%; }
+        /* CUSTOM HACKER TERMINAL */
+        .hacker-terminal {
+            background: #1a1a1a;
+            color: var(--hacker-green);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: left;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            border: 2px solid var(--hacker-green);
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.2);
+            margin-bottom: 20px;
+            min-height: 50px;
+            white-space: pre-wrap;
+            position: relative;
+        }
+        .hacker-terminal::before {
+            content: "SYSTEM LOG:";
+            display: block;
+            font-size: 10px;
+            margin-bottom: 5px;
+            opacity: 0.7;
+        }
+
+        textarea { 
+            width: 100%; height: 100px; border-radius: 10px; border: 2px solid #ddd; 
+            padding: 10px; margin-top: 10px; font-family: monospace; background: #fff; 
+            box-sizing: border-box; outline: none; transition: 0.3s;
+        }
+        textarea:focus { border-color: var(--blue); }
+
+        .btn-save { 
+            background: var(--blue); color: white; border: none; padding: 12px; 
+            border-radius: 10px; margin-top: 10px; cursor: pointer; font-weight: bold; 
+            width: 100%; text-transform: uppercase; letter-spacing: 1px;
+            box-shadow: 0 4px 0 #003d7a; transition: 0.1s;
+        }
+        .btn-save:active { transform: translateY(3px); box-shadow: none; }
+
+        .mic-btn { position: fixed; bottom: 30px; right: 30px; width: 70px; height: 70px; background: var(--blue); border-radius: 50%; border: 5px solid white; color: white; font-size: 30px; cursor: pointer; z-index: 1100; display: flex; justify-content: center; align-items: center; box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+        #status { position: fixed; bottom: 110px; right: 30px; background: var(--dark); color: white; padding: 10px 15px; border-radius: 12px; display: none; font-size: 13px; z-index: 1100; }
+        .footer { position: fixed; bottom: 8px; width: 100%; text-align: center; font-size: 11px; font-weight: bold; color: rgba(0,0,0,0.4); pointer-events: none; }
     </style>
 </head>
 <body>
@@ -44,14 +80,13 @@
 
     <div class="top-bar">
         <button class="menu-btn" onclick="toggle()">☰</button>
-        <b style="font-size: 22px;">FilipekSite</b>
+        <b style="font-size: 20px;">FilipekSite</b>
     </div>
 
     <div class="content" id="main">
         <div class="card">
             <h1 style="color: var(--blue);">Cześć Filipek! 🚀</h1>
-            <p>Twoje centrum dowodzenia gotowe.</p>
-            <p>Kliknij menu ☰ aby zacząć!</p>
+            <p>Baza danych aktywna.</p>
         </div>
     </div>
 
@@ -69,15 +104,12 @@
             document.getElementById('sidebar').classList.remove('active');
 
             if(p === 'kod') {
-                const pass = prompt("Podaj kod dostępu (5522):");
-                if(pass !== TAJNY_KOD) {
-                    alert("Zły kod!");
-                    return;
-                }
+                const pass = prompt("Dostęp zastrzeżony. Podaj kod:");
+                if(pass !== TAJNY_KOD) { alert("ODMOWA DOSTĘPU!"); return; }
             }
 
             if(p==='home') {
-                m.innerHTML = '<div class="card"><h1>Dom 🏠</h1><p>Witaj w bazie!</p></div>';
+                m.innerHTML = '<div class="card"><h1>Dom 🏠</h1><p>Witaj w bazie, koderze!</p></div>';
             }
             
             if(p==='yt') {
@@ -85,34 +117,28 @@
                 <div class="card">
                     <h1 style="color:var(--blue)">YouTuberzy 📺</h1>
                     <div class="yt-grid">
-                        <div class="yt-item" onclick="window.open('https://www.youtube.com/@WerkaAferka/videos')">
-                            <span class="yt-icon">💅</span><p>WerkaAferka</p>
-                        </div>
-                        <div class="yt-item" onclick="window.open('https://www.youtube.com/@Wojan/videos')">
-                            <span class="yt-icon">🧊</span><p>Wojan</p>
-                        </div>
-                        <div class="yt-item" onclick="window.open('https://www.youtube.com/@Palion/videos')">
-                            <span class="yt-icon">🔥</span><p>Palion</p>
-                        </div>
-                        <div class="yt-item" onclick="window.open('https://www.youtube.com/@Rembol/videos')">
-                            <span class="yt-icon">🎒</span><p>Rembol</p>
-                        </div>
+                        <div class="yt-item" onclick="window.open('https://www.youtube.com/@WerkaAferka/videos')"><span class="yt-icon">💅</span><p>Werka</p></div>
+                        <div class="yt-item" onclick="window.open('https://www.youtube.com/@Wojan/videos')"><span class="yt-icon">🧊</span><p>Wojan</p></div>
+                        <div class="yt-item" onclick="window.open('https://www.youtube.com/@Palion/videos')"><span class="yt-icon">🔥</span><p>Palion</p></div>
+                        <div class="yt-item" onclick="window.open('https://www.youtube.com/@Rembol/videos')"><span class="yt-icon">🎒</span><p>Rembol</p></div>
                     </div>
                 </div>`;
             }
             
             if(p==='spotify') {
                 m.innerHTML = `<div class="card"><h1>Twoja Muzyka 🎵</h1>
-                <iframe style="border-radius:12px" src="http://googleusercontent.com/spotify.com/18" width="100%" height="380" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe></div>`;
+                <iframe style="border-radius:12px" src="http://googleusercontent.com/spotify.com/19" width="100%" height="380" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe></div>`;
             }
 
             if(p==='kod') {
-                let saved = localStorage.getItem('filipek_kod') || "// Brak wpisów.";
-                m.innerHTML = `<div class="card"><h1>Pamiętnik Kodu 💻</h1>
-                <div style="background:#282c34; color:#61dafb; padding:15px; border-radius:10px; text-align:left; font-family:monospace; white-space: pre-wrap; margin-bottom:20px; font-size:13px; border: 1px solid #444;">${saved}</div>
-                <hr>
-                <textarea id="new-code" placeholder="Wpisz coś..."></textarea>
-                <button class="btn-save" onclick="saveCode()">ZAPISZ</button></div>`;
+                let saved = localStorage.getItem('filipek_kod') || "Brak zapisanych danych w chmurze...";
+                m.innerHTML = `
+                <div class="card" style="border-top-color: #00ff41;">
+                    <h1 style="color:#00ff41; background: #000; display: inline-block; padding: 5px 15px; border-radius: 5px;">HACKER_LOG</h1>
+                    <div class="hacker-terminal">${saved}</div>
+                    <textarea id="new-code" placeholder="Wpisz nowe dane do bazy..."></textarea>
+                    <button class="btn-save" style="background:#00ff41; color:#000; box-shadow: 0 4px 0 #008f24;" onclick="saveCode()">ZAPISZ DANE</button>
+                </div>`;
             }
         }
 
@@ -120,7 +146,7 @@
             const txt = document.getElementById('new-code').value;
             if(!txt.trim()) return;
             localStorage.setItem('filipek_kod', txt);
-            alert("Zapisano!");
+            alert("DANE ZAPISANE POMYŚLNIE!");
             move('kod'); 
         }
 
