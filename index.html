@@ -3,68 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FilipekSite | Home</title>
+    <title>FilipekSite v3.0 | Pro</title>
     <style>
-        :root { --yellow: #FFD700; --blue: #0056b3; --dark: #121212; --white: #ffffff; --hacker-green: #00ff41; }
+        :root { --yellow: #FFD700; --blue: #0056b3; --dark: #121212; --hacker: #00ff41; --julek: #ff4444; }
         body { margin: 0; background: var(--yellow); font-family: 'Segoe UI', sans-serif; overflow: hidden; height: 100vh; }
         
-        /* SIDEBAR */
-        .sidebar { position: fixed; left: -260px; top: 0; width: 260px; height: 100%; background: var(--dark); transition: 0.3s; z-index: 1000; padding-top: 60px; box-shadow: 5px 0 15px rgba(0,0,0,0.5); }
+        .sidebar { position: fixed; left: -260px; top: 0; width: 260px; height: 100%; background: var(--dark); transition: 0.3s; z-index: 1000; padding-top: 60px; display: flex; flex-direction: column; }
         .sidebar.active { left: 0; }
         .sidebar a { display: block; padding: 15px 25px; color: white; text-decoration: none; border-bottom: 1px solid #333; font-size: 18px; }
+        .sidebar .admin-link { margin-top: auto; border-top: 2px solid #444; background: #1a1a1a; color: var(--julek); font-weight: bold; padding: 20px; text-align: center; cursor: pointer; }
         
-        /* UI */
         .top-bar { background: var(--blue); color: white; padding: 15px; display: flex; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
         .menu-btn { background: none; border: none; color: white; font-size: 28px; cursor: pointer; margin-right: 15px; }
         .content { padding: 20px; display: flex; flex-direction: column; align-items: center; height: calc(100vh - 100px); overflow-y: auto; }
         .card { background: white; width: 95%; max-width: 500px; padding: 20px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); text-align: center; border-top: 8px solid var(--blue); margin-bottom: 20px; box-sizing: border-box; }
 
-        /* YT GRID */
         .yt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
         .yt-item { background: #f9f9f9; padding: 10px; border-radius: 15px; border: 2px solid #eee; cursor: pointer; }
         .yt-icon { font-size: 35px; }
-        .yt-item p { font-weight: bold; margin: 5px 0 0 0; font-size: 13px; color: var(--blue); }
 
-        /* CUSTOM HACKER TERMINAL */
-        .hacker-terminal {
-            background: #1a1a1a;
-            color: var(--hacker-green);
-            padding: 15px;
-            border-radius: 10px;
-            text-align: left;
-            font-family: 'Courier New', monospace;
-            font-size: 13px;
-            border: 2px solid var(--hacker-green);
-            box-shadow: 0 0 10px rgba(0, 255, 65, 0.2);
-            margin-bottom: 20px;
-            min-height: 50px;
-            white-space: pre-wrap;
-            position: relative;
-        }
-        .hacker-terminal::before {
-            content: "SYSTEM LOG:";
-            display: block;
-            font-size: 10px;
-            margin-bottom: 5px;
-            opacity: 0.7;
-        }
+        .hacker-box { background: #000; color: var(--hacker); padding: 12px; border-radius: 10px; text-align: left; font-family: monospace; border: 1px solid var(--hacker); font-size: 12px; margin-top: 10px; }
+        input, textarea { width: 100%; margin-top: 10px; font-family: monospace; padding: 12px; box-sizing: border-box; border-radius: 8px; border: 2px solid #ddd; outline: none; }
+        .btn-act { background: var(--hacker); color: #000; font-weight: bold; padding: 12px; border: none; width: 100%; border-radius: 8px; margin-top: 10px; cursor: pointer; }
 
-        textarea { 
-            width: 100%; height: 100px; border-radius: 10px; border: 2px solid #ddd; 
-            padding: 10px; margin-top: 10px; font-family: monospace; background: #fff; 
-            box-sizing: border-box; outline: none; transition: 0.3s;
-        }
-        textarea:focus { border-color: var(--blue); }
-
-        .btn-save { 
-            background: var(--blue); color: white; border: none; padding: 12px; 
-            border-radius: 10px; margin-top: 10px; cursor: pointer; font-weight: bold; 
-            width: 100%; text-transform: uppercase; letter-spacing: 1px;
-            box-shadow: 0 4px 0 #003d7a; transition: 0.1s;
-        }
-        .btn-save:active { transform: translateY(3px); box-shadow: none; }
-
-        .mic-btn { position: fixed; bottom: 30px; right: 30px; width: 70px; height: 70px; background: var(--blue); border-radius: 50%; border: 5px solid white; color: white; font-size: 30px; cursor: pointer; z-index: 1100; display: flex; justify-content: center; align-items: center; box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+        .mic-btn { position: fixed; bottom: 30px; right: 30px; width: 70px; height: 70px; background: var(--blue); border-radius: 50%; border: 5px solid white; color: white; font-size: 30px; z-index: 1100; display: flex; justify-content: center; align-items: center; box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
         #status { position: fixed; bottom: 110px; right: 30px; background: var(--dark); color: white; padding: 10px 15px; border-radius: 12px; display: none; font-size: 13px; z-index: 1100; }
         .footer { position: fixed; bottom: 8px; width: 100%; text-align: center; font-size: 11px; font-weight: bold; color: rgba(0,0,0,0.4); pointer-events: none; }
     </style>
@@ -72,98 +34,108 @@
 <body>
 
     <div class="sidebar" id="sidebar">
-        <a href="#" onclick="move('home')">🏠 Strona Główna</a>
+        <a href="#" onclick="move('home')">🏠 Home</a>
         <a href="#" onclick="move('yt')">📺 YouTuberzy</a>
-        <a href="#" onclick="move('spotify')">🎵 Spotify</a>
-        <a href="#" onclick="move('kod')">💻 Pamiętnik Kodu</a>
+        <a href="#" onclick="move('kod')">💻 Pamiętnik Filipka</a>
+        <div class="admin-link" onclick="move('julek')">🛡️ (TYLKO DLA JULKA)</div>
     </div>
 
     <div class="top-bar">
         <button class="menu-btn" onclick="toggle()">☰</button>
-        <b style="font-size: 20px;">FilipekSite</b>
+        <b style="font-size: 20px;">FilipekOS v3.0</b>
     </div>
 
-    <div class="content" id="main">
+    <div id="main" class="content">
         <div class="card">
             <h1 style="color: var(--blue);">Cześć Filipek! 🚀</h1>
-            <p>Baza danych aktywna.</p>
+            <p>System operacyjny w przeglądarce gotowy.</p>
         </div>
     </div>
 
     <div id="status">Słucham...</div>
-    <button class="mic-btn" id="go-mic">🎤</button>
+    <button class="mic-btn" onclick="startSpeech()">🎤</button>
     <div class="footer">Pamiętaj Filipku Julek Cię bardzo kocha</div>
 
     <script>
-        const TAJNY_KOD = "5522";
+        const KOD_FILIPKA = "5522";
+        const KOD_JULKA = "2907";
 
         function toggle() { document.getElementById('sidebar').classList.toggle('active'); }
-        
+
         function move(p) {
             const m = document.getElementById('main');
             document.getElementById('sidebar').classList.remove('active');
 
             if(p === 'kod') {
-                const pass = prompt("Dostęp zastrzeżony. Podaj kod:");
-                if(pass !== TAJNY_KOD) { alert("ODMOWA DOSTĘPU!"); return; }
+                if(prompt("Hasło Filipka:") !== KOD_FILIPKA) return;
+                let saved = localStorage.getItem('filip_data') || "Brak danych...";
+                m.innerHTML = `<div class="card" style="border-top-color: var(--hacker)">
+                    <h1 style="color: var(--hacker); background:#000; padding:5px;">PAMIĘTNIK</h1>
+                    <div class="hacker-box">${saved}</div>
+                    <textarea id="inp" placeholder="Napisz coś..."></textarea>
+                    <button class="btn-act" onclick="saveData()">ZAPISZ</button></div>`;
             }
 
-            if(p==='home') {
-                m.innerHTML = '<div class="card"><h1>Dom 🏠</h1><p>Witaj w bazie, koderze!</p></div>';
-            }
-            
-            if(p==='yt') {
-                m.innerHTML = `
-                <div class="card">
-                    <h1 style="color:var(--blue)">YouTuberzy 📺</h1>
-                    <div class="yt-grid">
-                        <div class="yt-item" onclick="window.open('https://www.youtube.com/@WerkaAferka/videos')"><span class="yt-icon">💅</span><p>Werka</p></div>
-                        <div class="yt-item" onclick="window.open('https://www.youtube.com/@Wojan/videos')"><span class="yt-icon">🧊</span><p>Wojan</p></div>
-                        <div class="yt-item" onclick="window.open('https://www.youtube.com/@Palion/videos')"><span class="yt-icon">🔥</span><p>Palion</p></div>
-                        <div class="yt-item" onclick="window.open('https://www.youtube.com/@Rembol/videos')"><span class="yt-icon">🎒</span><p>Rembol</p></div>
-                    </div>
+            if(p === 'julek') {
+                if(prompt("Hasło Admina:") !== KOD_JULKA) return;
+                m.innerHTML = `<div class="card" style="border-top-color: var(--julek); background: #1a1a1a; color: white;">
+                    <h1 style="color:var(--julek);">JULEK ADMIN 🛡️</h1>
+                    <div class="hacker-box" style="border-color:var(--julek); color:var(--julek);">TRYB: EXPLOIT_TESTER</div>
+                    
+                    <p style="margin-top:15px; font-size:12px;">Wpisz ID aplikacji (np. com.instagram.android):</p>
+                    <input type="text" id="app-id" placeholder="com.nazwa.apki" style="background:#333; color:white; border:none;">
+                    <button class="btn-act" style="background:var(--julek); color:white;" onclick="forceOpen()">ODPAL APKE PRZEZ INTENT</button>
+                    
+                    <hr style="margin:20px 0; border:0.5px solid #444;">
+                    <p style="font-size:12px;">Testowanie Node.js (Base64):</p>
+                    <textarea id="payload" style="background:#333; color:white; border:none;" placeholder="Payload..."></textarea>
+                    <button class="btn-act" style="background:var(--julek); color:white;" onclick="runTest()">SYMULUJ EXEC()</button>
                 </div>`;
-            }
-            
-            if(p==='spotify') {
-                m.innerHTML = `<div class="card"><h1>Twoja Muzyka 🎵</h1>
-                <iframe style="border-radius:12px" src="http://googleusercontent.com/spotify.com/19" width="100%" height="380" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe></div>`;
             }
 
-            if(p==='kod') {
-                let saved = localStorage.getItem('filipek_kod') || "Brak zapisanych danych w chmurze...";
-                m.innerHTML = `
-                <div class="card" style="border-top-color: #00ff41;">
-                    <h1 style="color:#00ff41; background: #000; display: inline-block; padding: 5px 15px; border-radius: 5px;">HACKER_LOG</h1>
-                    <div class="hacker-terminal">${saved}</div>
-                    <textarea id="new-code" placeholder="Wpisz nowe dane do bazy..."></textarea>
-                    <button class="btn-save" style="background:#00ff41; color:#000; box-shadow: 0 4px 0 #008f24;" onclick="saveCode()">ZAPISZ DANE</button>
-                </div>`;
+            if(p === 'home') m.innerHTML = `<div class="card"><h1>Home 🏠</h1><p>Wszystkie systemy sprawne.</p></div>`;
+            
+            if(p === 'yt') {
+                m.innerHTML = `<div class="card"><h1>YouTuberzy 📺</h1><div class="yt-grid">
+                    <div class="yt-item" onclick="window.open('https://www.youtube.com/@WerkaAferka/videos')"><span class="yt-icon">💅</span><p>Werka</p></div>
+                    <div class="yt-item" onclick="window.open('https://www.youtube.com/@Wojan/videos')"><span class="yt-icon">🧊</span><p>Wojan</p></div>
+                    <div class="yt-item" onclick="window.open('https://www.youtube.com/@Palion/videos')"><span class="yt-icon">🔥</span><p>Palion</p></div>
+                    <div class="yt-item" onclick="window.open('https://www.youtube.com/@Rembol/videos')"><span class="yt-icon">🎒</span><p>Rembol</p></div>
+                </div></div>`;
             }
         }
 
-        function saveCode() {
-            const txt = document.getElementById('new-code').value;
-            if(!txt.trim()) return;
-            localStorage.setItem('filipek_kod', txt);
-            alert("DANE ZAPISANE POMYŚLNIE!");
-            move('kod'); 
+        function forceOpen() {
+            const id = document.getElementById('app-id').value;
+            if(!id) return;
+            // To jest hakerski sposób na otwieranie dowolnej apki z przeglądarki
+            window.location.href = `intent://#Intent;scheme=android-app;package=${id};end`;
         }
 
-        const btn = document.getElementById('go-mic');
-        const st = document.getElementById('status');
-        const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+        function saveData() {
+            const val = document.getElementById('inp').value;
+            localStorage.setItem('filip_data', val);
+            alert("DANE ZAPISANE!");
+            move('kod');
+        }
 
-        if (Speech) {
+        function runTest() {
+            const p = document.getElementById('payload').value;
+            alert("Payload wysłany do symulatora: " + btoa(p));
+        }
+
+        function startSpeech() {
+            const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if(!Speech) return;
             const rec = new Speech(); rec.lang = 'pl-PL';
-            btn.onclick = () => { rec.start(); st.style.display="block"; st.innerText="Słucham..."; };
+            const st = document.getElementById('status');
+            rec.start(); st.style.display="block"; st.innerText="Słucham...";
             rec.onresult = (e) => {
                 const cmd = e.results[0][0].transcript.toLowerCase();
-                st.innerText = "Komenda: " + cmd;
-                if (cmd.includes("brawl stars")) window.location.href = "intent://#Intent;scheme=android-app;package=com.supercell.brawlstars;end";
-                if (cmd.includes("youtube")) window.location.href = "intent://#Intent;scheme=android-app;package=com.google.android.youtube;end";
-                setTimeout(() => { st.style.display="none"; }, 3000);
-            };
+                if(cmd.includes("brawl stars")) window.location.href="intent://#Intent;scheme=android-app;package=com.supercell.brawlstars;end";
+                if(cmd.includes("youtube")) window.location.href="intent://#Intent;scheme=android-app;package=com.google.android.youtube;end";
+                st.style.display="none";
+            }
         }
     </script>
 </body>
