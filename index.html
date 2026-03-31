@@ -3,26 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FilipekOS v6.0 | Cloud Sync</title>
+    <title>FilipekOS v6.1 | Fix</title>
     <style>
         :root { --yellow: #FFD700; --blue: #0056b3; --dark: #121212; --hacker: #00ff41; --julek: #ff4444; }
         body { margin: 0; background: var(--yellow); font-family: 'Segoe UI', sans-serif; overflow: hidden; height: 100vh; }
-        
         .sidebar { position: fixed; left: -260px; top: 0; width: 260px; height: 100%; background: var(--dark); transition: 0.3s; z-index: 1000; padding-top: 20px; display: flex; flex-direction: column; }
         .sidebar.active { left: 0; }
         .sidebar div.nav-item { display: block; padding: 15px 25px; color: white; border-bottom: 1px solid #333; font-size: 18px; cursor: pointer; }
         .admin-link { background: var(--julek); font-weight: bold; }
-        
         .top-bar { background: var(--blue); color: white; padding: 15px; display: flex; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .menu-btn { background: none; border: none; color: white; font-size: 28px; cursor: pointer; margin-right: 15px; }
-        
         .content { padding: 20px; display: flex; flex-direction: column; align-items: center; height: calc(100vh - 100px); overflow-y: auto; width: 100%; box-sizing: border-box; }
         .card { background: white; width: 100%; max-width: 450px; padding: 25px; border-radius: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); text-align: center; border-top: 10px solid var(--blue); margin-bottom: 20px; box-sizing: border-box; }
-
         .app-grid, .yt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; width: 100%; }
         .grid-item { background: #f8f9fa; padding: 20px; border-radius: 18px; font-weight: bold; color: var(--blue); border: 2px solid #eee; text-align: center; cursor: pointer; }
         .grid-item:active { transform: scale(0.9); background: #eee; }
-
         input, textarea { width: 100%; margin-top: 10px; padding: 12px; box-sizing: border-box; border-radius: 10px; border: 2px solid #ddd; font-size: 16px; }
         .btn-act { background: var(--blue); color: white; font-weight: bold; padding: 15px; border: none; width: 100%; border-radius: 12px; margin-top: 10px; cursor: pointer; }
         .mic-btn { position: fixed; bottom: 30px; right: 30px; width: 70px; height: 70px; background: var(--blue); border-radius: 50%; border: 5px solid white; color: white; font-size: 30px; z-index: 1100; display: flex; justify-content: center; align-items: center; box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
@@ -32,33 +27,33 @@
 <body>
 
     <div class="sidebar" id="sidebar">
-        <div class="nav-item admin-link" onclick="move('julek')">🛡️ PANEL ADMINA</div>
-        <div class="nav-item" onclick="move('home')">🏠 Start</div>
-        <div class="nav-item" onclick="move('apps')">🚀 Gry i Apki</div>
-        <div class="nav-item" onclick="move('yt')">📺 YouTuberzy</div>
-        <div class="nav-item" onclick="move('kod')">📖 Pamiętnik</div>
+        <div class="nav-item admin-link" onclick="window.move('julek')">🛡️ PANEL ADMINA</div>
+        <div class="nav-item" onclick="window.move('home')">🏠 Start</div>
+        <div class="nav-item" onclick="window.move('apps')">🚀 Gry i Apki</div>
+        <div class="nav-item" onclick="window.move('yt')">📺 YouTuberzy</div>
+        <div class="nav-item" onclick="window.move('kod')">📖 Pamiętnik</div>
     </div>
 
     <div class="top-bar">
-        <button class="menu-btn" onclick="toggle()">☰</button>
-        <b>FilipekOS Cloud Sync</b>
+        <button class="menu-btn" onclick="window.toggle()">☰</button>
+        <b id="header-title">FilipekOS v6.1 Cloud</b>
     </div>
 
     <div id="main" class="content">
-        <div class="card"><h1>Łączenie z chmurą... ☁️</h1></div>
+        <div class="card"><h1>Łączenie z Firebase... ☁️</h1></div>
     </div>
 
     <div id="status">Słucham...</div>
-    <button class="mic-btn" onclick="startVoice()">🎤</button>
+    <button class="mic-btn" onclick="window.startVoice()">🎤</button>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, set, onValue, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, set, onValue, push, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCAqUxJwhPUjpr0PeCCcKUtohCEDAfeopk",
             authDomain: "filipek-site.firebaseapp.com",
-            databaseURL: "https://filipek-site-default-rtdb.europe-west1.firebasedatabase.app",
+            databaseURL: "https://filipek-site-default-rtdb.firebaseio.com", // Zmienione na domyślny format
             projectId: "filipek-site",
             storageBucket: "filipek-site.firebasestorage.app",
             messagingSenderId: "780672431490",
@@ -68,15 +63,13 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // Zmienne globalne
         let currentApps = [];
-        window.move = move; // Udostępnienie funkcji dla HTML
+        window.currentPage = 'home';
 
-        // SYNCHRONIZACJA APEK W CZASIE RZECZYWISTYM
+        // Nasłuchiwanie zmian w apkach
         onValue(ref(db, 'apps'), (snapshot) => {
             const data = snapshot.val();
-            currentApps = data ? Object.values(data) : [];
-            console.log("Sync Apps:", currentApps);
+            currentApps = data ? Object.entries(data).map(([key, value]) => ({...value, firebaseKey: key})) : [];
             if(window.currentPage === 'apps') renderApps();
         });
 
@@ -85,8 +78,10 @@
             const m = document.getElementById('main');
             document.getElementById('sidebar').classList.remove('active');
 
-            if(p === 'home') m.innerHTML = `<div class="card"><h1>Start 🏠</h1><p>Wszystko zsynchronizowane!</p></div>`;
-            
+            if(p === 'home') {
+                m.innerHTML = `<div class="card"><h1>Cześć Filipek! 👋</h1><p>Wszystko działa. Wybierz opcję z menu!</p></div>`;
+            }
+
             if(p === 'apps') renderApps();
 
             if(p === 'yt') {
@@ -94,76 +89,89 @@
                     <div class="grid-item" onclick="window.open('https://youtube.com/@Wojan')">🧊 Wojan</div>
                     <div class="grid-item" onclick="window.open('https://youtube.com/@Palion')">🔥 Palion</div>
                     <div class="grid-item" onclick="window.open('https://youtube.com/@WerkaAferka')">💅 Werka</div>
+                    <div class="grid-item" onclick="window.open('https://youtube.com/@Rembol')">🎒 Rembol</div>
                 </div></div>`;
             }
 
             if(p === 'kod') {
-                if(prompt("Hasło:") !== "5522") return;
+                let pass = prompt("Podaj kod do Pamiętnika:");
+                if(pass !== "5522") return alert("Zły kod!");
                 onValue(ref(db, 'pamietnik'), (snap) => {
-                    m.innerHTML = `<div class="card"><h1>📖 Cloud Log</h1>
-                        <textarea id="inp" rows="10">${snap.val() || ""}</textarea>
-                        <button class="btn-act" onclick="saveCloudText()">ZAPISZ W CHMURZE</button></div>`;
+                    m.innerHTML = `<div class="card" style="border-top-color:var(--hacker)">
+                        <h1>📖 Twój Pamiętnik</h1>
+                        <textarea id="inp-cloud" rows="10" placeholder="Pisz tutaj...">${snap.val() || ""}</textarea>
+                        <button class="btn-act" style="background:var(--hacker); color:black" id="btn-save-cloud">ZAPISZ SEKRETY</button>
+                    </div>`;
+                    document.getElementById('btn-save-cloud').onclick = () => {
+                        set(ref(db, 'pamietnik'), document.getElementById('inp-cloud').value);
+                        alert("Zapisano w chmurze!");
+                    };
                 }, {onlyOnce: true});
             }
 
             if(p === 'julek') {
-                if(prompt("Hasło ADMIN:") !== "2907") return;
-                m.innerHTML = `<div class="card" style="border-color:var(--julek)">
-                    <h1 style="color:var(--julek)">ADMIN CLOUD 🛡️</h1>
-                    <input type="text" id="n" placeholder="Nazwa apki">
-                    <input type="text" id="i" placeholder="ID (com.package)">
-                    <button class="btn-act" style="background:var(--julek)" onclick="addAppCloud()">DODAJ DLA WSZYSTKICH</button>
-                    <button class="btn-act" style="background:#444" onclick="clearAppsCloud()">USUŃ WSZYSTKIE APKI</button>
+                let pass = prompt("Kod Admina:");
+                if(pass !== "2907") return alert("Brak dostępu!");
+                m.innerHTML = `<div class="card" style="border-top-color:var(--julek)">
+                    <h1 style="color:var(--julek)">ADMIN PANEL</h1>
+                    <input type="text" id="app-name" placeholder="Nazwa Gry">
+                    <input type="text" id="app-id" placeholder="ID (np. com.mojang...)">
+                    <button class="btn-act" style="background:var(--julek)" id="btn-add-cloud">DODAJ APKE</button>
+                    <hr style="margin:20px 0;">
+                    <button class="btn-act" style="background:#333" id="btn-reset-cloud">USUŃ WSZYSTKIE APKI</button>
                 </div>`;
+                
+                document.getElementById('btn-add-cloud').onclick = () => {
+                    const n = document.getElementById('app-name').value;
+                    const i = document.getElementById('app-id').value;
+                    if(n && i) {
+                        push(ref(db, 'apps'), { name: n, id: i });
+                        alert("Dodano!");
+                        document.getElementById('app-name').value = "";
+                        document.getElementById('app-id').value = "";
+                    }
+                };
+
+                document.getElementById('btn-reset-cloud').onclick = () => {
+                    if(confirm("Czy na pewno usunąć wszystkie gry z chmury?")) {
+                        remove(ref(db, 'apps'));
+                        alert("Wyczyszczono!");
+                    }
+                };
             }
         }
 
         function renderApps() {
             const m = document.getElementById('main');
-            let html = `<div class="card"><h1>Gry i Apki 🚀</h1><div class="app-grid">`;
+            let html = `<div class="card"><h1>Twoje Gry 🎮</h1><div class="app-grid">`;
             currentApps.forEach(app => {
-                html += `<div class="grid-item" onclick="window.location.href='intent://#Intent;scheme=android-app;package=${app.id};end'">📱<br>${app.name}</div>`;
+                html += `<div class="grid-item" onclick="window.location.href='intent://#Intent;scheme=android-app;package=${app.id};end'">🚀<br>${app.name}</div>`;
             });
+            if(currentApps.length === 0) html += `<p style="grid-column:1/3">Brak gier w chmurze.</p>`;
             html += `</div></div>`;
             m.innerHTML = html;
         }
 
-        window.addAppCloud = () => {
-            const name = document.getElementById('n').value;
-            const id = document.getElementById('i').value;
-            if(name && id) {
-                push(ref(db, 'apps'), { name, id });
-                alert("Wysłano do chmury!");
-            }
-        };
-
-        window.clearAppsCloud = () => {
-            if(confirm("Wyczyścić chmurę?")) set(ref(db, 'apps'), null);
-        };
-
-        window.saveCloudText = () => {
-            set(ref(db, 'pamietnik'), document.getElementById('inp').value);
-            alert("Zapisano w chmurze!");
-        };
-
+        // Ekspozycja funkcji do okna
+        window.move = move;
         window.toggle = () => document.getElementById('sidebar').classList.toggle('active');
-        
-        // GŁOS
         window.startVoice = () => {
             const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if(!Speech) return;
+            if(!Speech) return alert("Brak obsługi głosu.");
             const rec = new Speech(); rec.lang = 'pl-PL';
             const st = document.getElementById('status');
-            rec.start(); st.style.display="block";
+            rec.onstart = () => { st.style.display="block"; st.innerText="Słucham..."; };
             rec.onresult = (e) => {
                 const cmd = e.results[0][0].transcript.toLowerCase();
                 let found = currentApps.find(a => cmd.includes(a.name.toLowerCase()));
                 if(found) window.location.href = `intent://#Intent;scheme=android-app;package=${found.id};end`;
+                else alert("Nie znaleziono: " + cmd);
                 st.style.display="none";
             };
+            rec.onerror = () => st.style.display="none";
+            rec.start();
         };
 
-        // Start strony
         move('home');
     </script>
 </body>
